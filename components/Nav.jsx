@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 
 const Nav = () => {
-    const isUserLogedIn = true; // You might want to dynamically check the logged-in state using useSession
+    const { data: session } = useSession();
     const [providers, setProviders] = useState(null);
     const [toogleDropdown, setToogleDropdown] = useState(false);
 
@@ -25,15 +25,15 @@ const Nav = () => {
                 <Image width={30} height={30} className='object-contain' alt='logo' src='/assets/images/logo.svg' />
                 <p className='logo_text'>prompt</p>
             </Link>
-
             {/* Desktop Navigation */}
             <div className='hidden sm:flex'>
-                {isUserLogedIn ? (
+                {session?.user ? (
                     <div className='flex gap-3 md:gap-5'>
                         <Link href='/create-prompt'><p className='black_btn'>Create Post</p></Link>
                         <button type='button' onClick={signOut} className='outline_btn'>Sign Out</button>
                         <Link href='/profile'>
-                            <Image width={37} height={37} className='object-contain' alt='logo' src='/assets/images/logo.svg' />
+                            <Image width={37} height={37} className='object-contain' alt='logo' src={session?.user?.image}
+                            />
                         </Link>
                     </div>
                 ) : (
@@ -54,14 +54,14 @@ const Nav = () => {
 
             {/* Mobile Navigation */}
             <div className='flex sm:hidden relative'>
-                {isUserLogedIn ? (
+                {session?.user ? (
                     <div className='flex'>
                         <Image
                             width={37}
                             height={37}
                             className='object-contain'
                             alt='logo'
-                            src='/assets/images/logo.svg'
+                            src={session?.user?.image}
                             onClick={() => setToogleDropdown((prev) => !prev)}
                         />
                         {toogleDropdown && (
